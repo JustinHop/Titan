@@ -60,5 +60,6 @@ Temporary Items
 #structure is as follows
 #API KEY
 #SECRET KEY
-
+.ropeproject
+my*
 login-real.txt

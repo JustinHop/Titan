@@ -34,7 +34,7 @@ def __start_ticker(interval):
         print(interval + " tick")
         pub.sendMessage("tick" + interval)
         live_tick_count += 1
-        time.sleep(__convert_interval_to_int(interval))  # wait 5 minutes
+        time.sleep(__convert_interval_to_int(interval))
 
 
 def __convert_interval_to_int(interval):

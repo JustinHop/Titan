@@ -56,10 +56,13 @@ Temporary Items
 
 *.db-journal
 
+_volumes/*
+
 #login file with real exchange credentials on local machine
 #structure is as follows
 #API KEY
 #SECRET KEY
 .ropeproject
 my*
+
 login-real.txt

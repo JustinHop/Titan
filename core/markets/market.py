@@ -23,15 +23,18 @@ class Market:
         self.api_key = None
         self.secret_key = None
         self.get_exchange_login()
-        self.exchange = exchange({'apiKey': self.api_key, 'secret': self.secret_key, })
+        self.exchange = exchange(
+            {'apiKey': self.api_key, 'secret': self.secret_key, })
         self.base_currency = base_currency
         self.quote_currency = quote_currency
-        self.analysis_pair = '{}/{}'.format(self.base_currency, self.quote_currency)
+        self.analysis_pair = '{}/{}'.format(
+            self.base_currency, self.quote_currency)
         self.signals = []
         self.ohlcv_id = defaultdict(int)
         self.indicators = defaultdict(list)
         self.candles = defaultdict(list)
-        self.latest_candle = defaultdict(list)  # allows for order simulations based on historical ohlcv data
+        # allows for order simulations based on historical ohlcv data
+        self.latest_candle = defaultdict(list)
         markets.append(self)
 
     def update(self, interval, candle):
@@ -52,18 +55,29 @@ class Market:
     def get_exchange_login(self):
         """Put API Key and Secret into login-real.txt file on your local machine"""
         try:
-            login_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'login-real.txt')
+            login_file = os.path.join(
+                os.path.dirname(
+                    os.path.realpath(__file__)),
+                'login-real.txt')
             with open(login_file) as f:
                 data = f.read().splitlines()
             self.exchange.api_key = data[0]
             self.exchange.secret_key = data[1]
-        except:
+        except BaseException:
             logger.error("Invalid login file")
 
     def limit_buy(self, quantity, price):
         """Place a limit buy order"""
         try:
-            self.strategy.send_message("Executed buy of " + str(quantity) + " " + self.base_currency + " for " + str(price) + " " + self.quote_currency)
+            self.strategy.send_message(
+                "Executed buy of " +
+                str(quantity) +
+                " " +
+                self.base_currency +
+                " for " +
+                str(price) +
+                " " +
+                self.quote_currency)
             return order.Order(self, "buy", "limit", quantity, price)
         except BaseError:
             self.strategy.send_message("Error creating buy order")
@@ -72,7 +86,15 @@ class Market:
     def limit_sell(self, quantity, price):
         """Place a limit sell order"""
         try:
-            self.strategy.send_message("Executed sell of " + str(quantity) + " " + self.base_currency + " for " + str(price) + " " + self.quote_currency)
+            self.strategy.send_message(
+                "Executed sell of " +
+                str(quantity) +
+                " " +
+                self.base_currency +
+                " for " +
+                str(price) +
+                " " +
+                self.quote_currency)
             return order.Order(self, "sell", "limit", quantity, price)
         except BaseError:
             self.strategy.send_message("Error creating sell order")
@@ -96,7 +118,9 @@ class Market:
 
     def get_historical_candles(self, interval, candle_limit=None):
         if len(self.candles[interval]) == 0:
-            self.candles[interval] = market_watcher.get_market_watcher(self.exchange.id, self.base_currency, self.quote_currency, interval).get_historical_candles()
+            self.candles[interval] = market_watcher.get_market_watcher(
+                self.exchange.id, self.base_currency, self.quote_currency,
+                interval).get_historical_candles()
         if candle_limit is None:
             return self.candles[interval]
         else:

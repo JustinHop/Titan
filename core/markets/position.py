@@ -19,13 +19,16 @@ class Position:
 
 class LongPosition(Position):
     """This class will handle a position's orders, stop losses, and exit/entry"""
-    def __init__(self, market, amount, price, fixed_stoploss_percent, trailing_stoploss_percent, profit_target_percent):
+
+    def __init__(self, market, amount, price, fixed_stoploss_percent,
+                 trailing_stoploss_percent, profit_target_percent):
         super().__init__(market, amount, price)
         self.is_open = False
         self.profit_target_percent = profit_target_percent
         self.trailing_stoploss_percent = self.price * trailing_stoploss_percent
         self.trailing_stoploss = self.calculate_trailing_stoploss()
-        self.fixed_stoploss = price * fixed_stoploss_percent  # we can pass in an actual value to keep our fixed loss at
+        # we can pass in an actual value to keep our fixed loss at
+        self.fixed_stoploss = price * fixed_stoploss_percent
         self.profit_target = self.calculate_profit_target()
         self.initial_order = None
 
@@ -65,26 +68,44 @@ class LongPosition(Position):
 
     def liquidate_position(self):
         """Will use this method to actually create the order that liquidates the position"""
-        logger.info("Liquidating long position of " + self.amount + " | " + self.market.analysis_pair)
+        logger.info(
+            "Liquidating long position of " +
+            self.amount +
+            " | " +
+            self.market.analysis_pair)
         self.market.limit_sell(self.amount, self.market.get_best_bid())
         self.is_open = False
 
 
 class ShortPosition(Position):
     """Short position is basically just to close out the order successfully ie liquidate_position"""
+
     def __init__(self, market, amount, price):
         super().__init__(market, amount, price)
         self.initial_order = None
 
     def open(self):
-        self.initial_order = Order(self.market, "sell", "limit", self.amount, self.price)
+        self.initial_order = Order(
+            self.market,
+            "sell",
+            "limit",
+            self.amount,
+            self.price)
 
     def confirm_sell_order(self):
         pass
 
 
-def open_long_position(market, amount, price, fixed_stoploss_percent, trailing_stoploss_percent, profit_target_percent):
-    position = LongPosition(market, amount, price, fixed_stoploss_percent, trailing_stoploss_percent, profit_target_percent)
+def open_long_position(
+        market, amount, price, fixed_stoploss_percent,
+        trailing_stoploss_percent, profit_target_percent):
+    position = LongPosition(
+        market,
+        amount,
+        price,
+        fixed_stoploss_percent,
+        trailing_stoploss_percent,
+        profit_target_percent)
     position.open()
     return position
 
@@ -101,5 +122,3 @@ def calculate_transaction_fee(exchange, pair):
 
 def calculate_drawdown():
     pass
-
-

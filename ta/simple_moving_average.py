@@ -11,6 +11,10 @@ class SimpleMovingAverage(BaseIndicator):
         """get latest candles from market, do calculation, write results to db"""
         dataset = self.market.candles[self.interval]            # save reference of market candles for read-ability
         if len(dataset) >= self.periods:                        # check that enough market candles are available for calculation
-            data_window = dataset[-self.periods:]               # take slice of correct number of candles
-            data = list(c[4] for c in data_window)              # take list of close values from candles
-            self.value = round(sma(data, self.periods)[-1], 6)  # update current value
+            # take slice of correct number of candles
+            data_window = dataset[-self.periods:]
+            # take list of close values from candles
+            data = list(c[4] for c in data_window)
+            self.value = round(
+                sma(data, self.periods)[-1],
+                6)  # update current value

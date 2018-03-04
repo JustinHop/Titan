@@ -54,6 +54,12 @@ You should get an indication that the app is running on port 5555 on your local 
 
 This should start up the app the same as above, only in a container.
 
+## Getting Started With Docker-Compose
+
+    docker-compose up
+
+Same as above
+
 ## Using Titan
 At first it's recommended to trade only simulation currency and familiarize yourself with the behavior of the program. 
 A [detailed wiki](https://github.com/Denton24646/Titan/wiki) explains the core components underlying Titan. 

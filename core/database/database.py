@@ -1,22 +1,16 @@
-import os
 from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, Float, MetaData, ForeignKey
+from sqlalchemy import Table, Column, Integer, String, Float, MetaData, ForeignKey, BigInteger
 from threading import Lock
 import logging
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
-db_name = 'core.db'
-db_fullpath = os.path.join(
-    os.path.dirname(
-        os.path.realpath(__file__)),
-    db_name)
+
 lock = Lock()
-engine = create_engine(
-    'sqlite:///{}'.format(db_fullpath),
-    connect_args={
-        'check_same_thread': False},
-    echo=False)
+engine = create_engine('postgresql://username:password@postgresql:5432/titan',
+                       echo=True)
+
 metadata = MetaData()
 
 
@@ -31,8 +25,8 @@ OHLCV = Table('OHLCV', metadata,
               Column('Close', Float),
               Column('Volume', Float),
               Column('Interval', String),
-              Column('TimestampRaw', Integer),
-              Column('PairID', String, ForeignKey('TradingPairs.ID')),
+              Column('TimestampRaw', BigInteger),
+              Column('PairID', Integer, ForeignKey('TradingPairs.ID')),
               )
 
 TradingPairs = Table('TradingPairs', metadata,

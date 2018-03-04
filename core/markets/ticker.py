@@ -17,7 +17,8 @@ def subscribe(tick_callable, interval):
 
 
 def start_ticker(interval):
-    """Start a ticker/timer that notifies market watchers when to pull a new candle"""
+    """Start a ticker/timer that notifies market watchers when to pull a
+        new candle"""
     if interval not in tickers:
         tickers[interval] = Thread(
             target=__start_ticker, args=(
@@ -25,11 +26,13 @@ def start_ticker(interval):
 
 
 def __start_ticker(interval):
-    """Start a ticker own its own thread, will use pypubsub to send a message each time interval"""
+    """Start a ticker own its own thread, will use pypubsub
+        to send a message each time interval"""
     logger.info(interval + " ticker running...")
     live_tick_count = 0
     while True:
-        """Running this 'ticker' from the main loop to trigger listeners to pull candles every 5 minutes"""
+        """Running this 'ticker' from the main loop to trigger listeners
+            to pull candles every 5 minutes"""
         logger.info("Live Tick: {}".format(str(live_tick_count)))
         print(interval + " tick")
         pub.sendMessage("tick" + interval)
@@ -44,3 +47,4 @@ def __convert_interval_to_int(interval):
         return 60
     if interval == "1h":
         return 3600
+    return(int(interval))

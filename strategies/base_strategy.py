@@ -8,6 +8,7 @@ import logging
 
 strategies = []
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class BaseStrategy:

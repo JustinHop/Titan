@@ -1,13 +1,15 @@
 version: '3'
 services:
   titan:
-    # restart: always
+    restart: always
     build: .
+    depends_on:
+      - postgresql
     volumes:
       - .:/titan/src/Titan:rw
     links:
       - postgresql
-    ports: # you can comment this out when using the nginx frontend
+    ports:
       - 5555:5555
   postgresql:
     restart: always

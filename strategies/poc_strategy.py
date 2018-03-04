@@ -1,12 +1,21 @@
 from strategies.base_strategy import BaseStrategy
 from signal_generators import sma_crossover_signal
 
+# from pprint import pprint, pformat
+
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 
 class PocStrategy(BaseStrategy):
     """A strategy using the SMA crossover signal generator as a buy signal
-    This strategy will trigger the SMA crossover signal on every candle and check for buy conditions
-    If the condition returns true, the strategy will open a long position it does not have up to (position_limit) opened
-    Each position opened will automatically sell itself off when its price (profit_target_percent*buy price) is met
+    This strategy will trigger the SMA crossover signal on every candle
+        and check for buy conditions
+    If the condition returns true, the strategy will open a long position
+        it does not have up to (position_limit) opened
+    Each position opened will automatically sell itself off when its
+        price (profit_target_percent*buy price) is met
     """
 
     def __init__(
@@ -28,6 +37,7 @@ class PocStrategy(BaseStrategy):
         self.trailing_stoploss_percent = .97
 
     def on_data(self, candle):
+        logger.info("Got candle {}".format(candle))
         buy_condition = self.buy_signal.check_condition(candle)
         if self.get_open_position_count() >= self.position_limit:
             pass

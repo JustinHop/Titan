@@ -8,23 +8,30 @@ from ccxt import BaseError
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 markets = []
 
 
 class Market:
     """An object that allows a specific strategy to interface with an exchange,
-    This includes functionality to contain and update TA indicators as well as the latest OHLCV data
-    This also handles the API key for authentication, as well as methods to place orders"""
+    This includes functionality to contain and update TA indicators as well
+        as the latest OHLCV data
+    This also handles the API key for authentication, as well as methods to
+        place orders"""
 
     def __init__(self, exchange, base_currency, quote_currency, strategy):
+        logger.info("New Market Class {}".format(exchange))
         exchange = getattr(ccxt, exchange)
         self.strategy = strategy
         self.api_key = None
         self.secret_key = None
         self.get_exchange_login()
-        self.exchange = exchange(
-            {'apiKey': self.api_key, 'secret': self.secret_key, })
+        ex = {'apiKey': self.api_key, 'secret': self.secret_key, }
+        if self.third_key:
+            ex['password'] = self.third_key
+            ex['verbose'] = True
+        self.exchange = exchange(ex)
         self.base_currency = base_currency
         self.quote_currency = quote_currency
         self.analysis_pair = '{}/{}'.format(
@@ -61,8 +68,12 @@ class Market:
                 'login-real.txt')
             with open(login_file) as f:
                 data = f.read().splitlines()
-            self.exchange.api_key = data[0]
-            self.exchange.secret_key = data[1]
+            self.api_key = data[0]
+            self.secret_key = data[1]
+            try:
+                self.third_key = data[2]
+            except IndexError:
+                self.third_key = None
         except BaseException:
             logger.error("Invalid login file")
 

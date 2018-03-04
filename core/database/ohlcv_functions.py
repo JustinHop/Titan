@@ -7,6 +7,7 @@ import logging
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 engine = database.engine
 conn = engine.connect()
 
@@ -60,9 +61,9 @@ def get_latest_candle(exchange, pair, interval):
 def get_all_candles(pair_id):
     with database.lock:
         logger.info("Retrieving all candles for pair " + str(pair_id))
-        result = conn.execute(
-            "SELECT TimestampRaw, Open, High, Low, Close, Volume FROM OHLCV WHERE PairID = ?",
-            (pair_id,))
+        s = select([database.OHLCV]).where(
+            database.OHLCV.c.PairID == pair_id)
+        result = conn.execute(s)
         return [row for row in result]
 
 
@@ -96,9 +97,9 @@ def write_trade_pairs_to_db(exchange_id, base, quote, interval):
             if result is None:
                 ins = database.TradingPairs.insert().values(
                     Exchange=exchange_id, BaseCurrency=base,
-                    QuoteCurrency=quote, Interval=interval)
-                conn.execute(ins)
-                return conn.execute(s).cursor.lastrowid
+                    QuoteCurrency=quote, Interval=interval).returning(
+                        database.TradingPairs.c.ID)
+                return ins
             else:
                 logger.info(
                     "Market data already available for pair, returning ID for lookups")

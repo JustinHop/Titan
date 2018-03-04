@@ -4,12 +4,15 @@ from time import sleep
 import logging
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def start_strategy(user_input):
 
-    # strategy = poc_strategy.PocStrategy("5m", 'bittrex', 'ETH', 'BTC', 100, 700, True, sim_balance=10)
-    # strategy2 = poc_strategy.PocStrategy("5m", 'binance', 'ETH', 'BTC', 233, 900, True, sim_balance=10)
+    # strategy = poc_strategy.PocStrategy("5m",
+    # 'bittrex', 'ETH', 'BTC', 100, 700, True, sim_balance=10)
+    # strategy2 = poc_strategy.PocStrategy("5m", 'binance',
+    # 'ETH', 'BTC', 233, 900, True, sim_balance=10)
 
     strategy = poc_strategy.PocStrategy(
         user_input[3],
@@ -26,6 +29,7 @@ def start_strategy(user_input):
 
 
 def start_database():
+    logger.info("Creating DB tables from start_database")
     database.create_tables()
 
 # For running app headless
@@ -34,6 +38,7 @@ def start_database():
 def start():
     try:
         # wipe and recreate tables
+        logger.info("Creating DB tables")
         database.create_tables()
 
         start_strategy()
@@ -42,6 +47,7 @@ def start():
         print(e)
 
     finally:
+        logger.info("Wiping DB tables")
         database.engine.dispose()
 
 

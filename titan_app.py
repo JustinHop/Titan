@@ -4,14 +4,18 @@ from flask_debugtoolbar import DebugToolbarExtension
 from core import titan_main
 import logging
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 app = Flask(__name__)
 titan_main.start_database()
 
 app.debug = True
-app.config['SECRET_KEY'] = '100'
+app.config['SECRET_KEY'] = 'f1cbae3a1aec63322bb3dd034e95307b'
+#app.config['TEMPLATES_AUTO_RELOAD'] = True
+#app.config['TESTING'] = True
 toolbar = DebugToolbarExtension(app)
 
-logger = logging.getLogger(__name__)
 
 
 @app.route("/")
